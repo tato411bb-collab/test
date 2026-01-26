@@ -138,10 +138,10 @@ const jsonString = JSON.stringify(jsonPayload);
 // URL encode only special chars, keep readable
 const encodedPayload = encodeURIComponent(jsonString);
  
-showResponse('📤 GET URL:\nhttps://ec2-100-24-253-230.compute-1.amazonaws.com:4679/webhook/testa?json=' + encodedPayload.substring(0, 100) + '...\n\nRaw JSON:\n' + jsonString, '');
+showResponse('📤 GET URL:\nhttps://ec2-100-24-253-230.compute-1.amazonaws.com:4678/webhook/testa?json=' + encodedPayload.substring(0, 100) + '...\n\nRaw JSON:\n' + jsonString, '');
  
 // Send raw JSON as URL parameter
-const webhookUrl = `https://ec2-100-24-253-230.compute-1.amazonaws.com:4679/webhook/testa?json=${encodedPayload}&api_key=9aacf21af6a5e7egyrftr5rte462a9e318ca36748b950b2b6e6ddd566135c`;
+const webhookUrl = `https://ec2-100-24-253-230.compute-1.amazonaws.com:4678/webhook/testa?json=${encodedPayload}&api_key=9aacf21af6a5e7egyrftr5rte462a9e318ca36748b950b2b6e6ddd566135c`;
  
 const webhookResponse = await fetch(webhookUrl, {
 method: 'GET',
