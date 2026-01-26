@@ -144,7 +144,7 @@ showResponse('📤 GET URL:\nhttps://kjn8n.org:4678/webhook/testa?json=' + encod
 const webhookUrl = `https://kjn8n.org:4678/webhook/testa?json=${encodedPayload}&api_key=9aacf21af6a5e7egyrftr5rte462a9e318ca36748b950b2b6e6ddd566135c`;
  
 const webhookResponse = await fetch(webhookUrl, {
-method: 'POST',
+method: 'GET',
 headers: {
 'Authorization': 'Bearer 9aacf21af6a5e7egyrftr5rte462a9e318ca36748b950b2b6e6ddd566135c',
 'Content-Type': 'application/json',
