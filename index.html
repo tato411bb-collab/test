@@ -146,12 +146,10 @@ const webhookUrl = `https://kjn8n.org/webhook/testa?json=${encodedPayload}&api_k
 const webhookResponse = await fetch(webhookUrl, {
 method: 'GET',
 headers: {
-'Authorization': 'Bearer 9aacf21af6a5e7egyrftr5rte462a9e318ca36748b950b2b6e6ddd566135c',
-'Content-Type': 'application/json',
-'x-api-key': '9aacf21af6a5e7egyrftr5rte462a9e318ca36748b950b2b6e6ddd566135c'
-},
-body: JSON.stringify(jsonPayload)
-})
+'Authorization': 'Bearer 9aacf21af6a5e7egyrftr5rte462a9e318ca36748b950b2b6e6ddd566135c'
+}
+
+});
  
 const webhookData = await webhookResponse.text();
  
