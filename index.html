@@ -1,3 +1,5 @@
+
+ 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -147,7 +149,8 @@ const webhookResponse = await fetch(webhookUrl, {
 method: 'GET',
 headers: {
 'Authorization': 'Bearer 9aacf21af6a5e7egyrftr5rte462a9e318ca36748b950b2b6e6ddd566135c'
-}
+},
+ 
 })
  
 const webhookData = await webhookResponse.text();
@@ -180,7 +183,7 @@ btn.textContent = 'Send to Webhook';
 function showResponse(text, className = '') {
 const responseDiv = document.getElementById('response');
 responseDiv.textContent = text;
-responseDiv.className = className;
+responseDiv.className = className; 
 }
  
 document.getElementById('userContent').focus();
