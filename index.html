@@ -1,11 +1,9 @@
-
- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> Draft Webform → N8N-Webhook → Lakera Guard API & Splunk & Cribl </title>
+<title>Draft Webform → N8N-Webhook → Lakera Guard API & Splunk & Cribl</title>
 <style>
 body {
 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -41,7 +39,6 @@ button:disabled {
 background: #9ca3af;
 cursor: not-allowed;
 }
- 
 #response {
 margin-top: 24px;
 padding: 16px;
@@ -53,8 +50,6 @@ white-space: pre-wrap;
 font-family: 'Courier New', monospace;
 font-size: 13px;
 }
- 
- 
 .error {
 background: #3b1a1a;
 border-color: #dc2626;
@@ -75,47 +70,48 @@ margin: 20px 0;
 background: #fef3c7;
 border-color: #f59e0b;
 color: #92400e;
+padding: 12px;
+border-radius: 6px;
+margin: 0;
 }
 </style>
 </head>
 <body>
-<h3> Draft AI Webform: Webserver N8N-Webhook → Lakera API → Cribl & Splunk </h3>
- 
+<h1>Draft AI Webform: Webserver N8N-Webhook → Lakera API → Cribl & Splunk</h1>
+
 <div class="config-section">
-<h7></h7>
 <p class="warning">⚠️ Note: Long URLs may truncate. Keep prompts short (&lt;100 chars).</p>
 </div>
- 
+
 <label>
 <strong>Enter prompt content:</strong><br>
 <textarea id="userContent" placeholder="Type your AI prompt here... (keep short)"></textarea>
 </label>
- 
-<button onclick="sendToWebhook()">Send To AI </button>
- 
+
+<button onclick="sendToWebhook()">Send To AI</button>
+
 <div id="response"></div>
- 
+
 <script>
 async function sendToWebhook() {
 const userContent = document.getElementById('userContent').value.trim();
 const responseDiv = document.getElementById('response');
- 
+
 if (!userContent) {
 showResponse('❌ Please enter prompt content.', 'error');
 return;
 }
- 
+
 const btn = document.querySelector('button');
 btn.disabled = true;
 btn.textContent = 'Sending...';
 responseDiv.textContent = '';
- 
+
 try {
- 
 // 1) Fetch client public IP
 const ipRes = await fetch('https://api.ipify.org?format=json');
-const ipData = await ipRes.json(); // { ip: "x.x.x.x" }
- 
+const ipData = await ipRes.json();
+
 const jsonPayload = {
 messages: [{
 content: userContent,
@@ -128,33 +124,27 @@ breakdown: true,
 metadata: {
 user_id: 'user1',
 session_id: 'xx1',
-ip_address: ipData.ip,
- 
+ip_address: ipData.ip
 }
- 
 };
- 
-// Raw JSON string (no encoding)
+
 const jsonString = JSON.stringify(jsonPayload);
- 
-// URL encode only special chars, keep readable
 const encodedPayload = encodeURIComponent(jsonString);
- 
-showResponse('📤 GET URL:\nhttps://kjn8n.org:4679/webhook/testa?json=' + encodedPayload.substring(0, 100) + '...\n\nRaw JSON:\n' + jsonString, '');
- 
+
+showResponse('📤 GET URL:\nhttps://kjn8n.org/n8n/webhook/testa?json=' + encodedPayload.substring(0, 100) + '...\n\nRaw JSON:\n' + jsonString, '');
+
 // Send raw JSON as URL parameter
-const webhookUrl = `https://kjn8n.org:4679/webhook/testa?json=${encodedPayload}&api_key=9aacf21af6a5e7egyrftr5rte462a9e318ca36748b950b2b6e6ddd566135c`;
- 
+const webhookUrl = `https://kjn8n.org/n8n/webhook/testa?json=${encodedPayload}&api_key=9aacf21af6a5e7egyrftr5rte462a9e318ca36748b950b2b6e6ddd566135c`;
+
 const webhookResponse = await fetch(webhookUrl, {
 method: 'GET',
 headers: {
 'Authorization': 'Bearer 9aacf21af6a5e7egyrftr5rte462a9e318ca36748b950b2b6e6ddd566135c'
-},
- 
-})
- 
+}
+});
+
 const webhookData = await webhookResponse.text();
- 
+
 if (webhookResponse.ok) {
 showResponse(
 `✅ Webhook Success (${webhookResponse.status})\n\n` +
@@ -171,23 +161,22 @@ showResponse(
 'error'
 );
 }
- 
+
 } catch (error) {
 showResponse(`❌ Error: ${error.message}`, 'error');
 } finally {
 btn.disabled = false;
-btn.textContent = 'Send to Webhook';
+btn.textContent = 'Send to AI';
 }
 }
- 
+
 function showResponse(text, className = '') {
 const responseDiv = document.getElementById('response');
 responseDiv.textContent = text;
-responseDiv.className = className; 
+responseDiv.className = className;
 }
- 
+
 document.getElementById('userContent').focus();
 </script>
 </body>
 </html>
- 
