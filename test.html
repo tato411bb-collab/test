@@ -1,1 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Draft Webform → N8N-Webhook → Lakera Guard API & Splunk & Cribl</title>
+<style>
+body {
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+max-width: 600px;
+margin: 40px auto;
+padding: 20px;
+line-height: 1.6;
+}
+textarea {
+width: 100%;
+height: 120px;
+padding: 12px;
+border: 2px solid #ddd;
+border-radius: 8px;
+font-size: 14px;
+box-sizing: border-box;
+font-family: inherit;
+}
+button {
+background: #059669;
+color: white;
+border: none;
+padding: 12px 24px;
+border-radius: 6px;
+font-size: 16px;
+cursor: pointer;
+margin-top: 12px;
+}
+button:hover {
+background: #047857;
+}
+button:disabled {
+background: #9ca3af;
+cursor: not-allowed;
+}
+#response {
+margin-top: 24px;
+padding: 16px;
+border-radius: 8px;
+background: #1e1e1e;
+color: #ffffff;
+border: 1px solid #333;
+white-space: pre-wrap;
+font-family: 'Courier New', monospace;
+font-size: 13px;
+}
+.error {
+background: #3b1a1a;
+border-color: #dc2626;
+color: #ff6b6b;
+}
+.success {
+background: #1a3b1a;
+border-color: #4ade80;
+color: #86efac;
+}
+.config-section {
+background: #f1f5f9;
+padding: 16px;
+border-radius: 8px;
+margin: 20px 0;
+}
+.warning {
+background: #fef3c7;
+border-color: #f59e0b;
+color: #92400e;
+padding: 12px;
+border-radius: 6px;
+margin: 0;
+}
+</style>
+</head>
+<body>
+<h4>Draft AI Webform: Webserver N8N-Webhook → Lakera API → Cribl & Splunk</h4>
 
+<div class="config-section">
+<p class="warning">⚠️ Note: Long URLs may truncate. Keep prompts short (&lt;100 chars).</p>
+</div>
+
+<label>
+<strong>Enter prompt content:</strong><br>
+<textarea id="userContent" placeholder="Type your AI prompt here... (keep short)"></textarea>
+</label>
+
+<button onclick="sendToWebhook()">Send To AI</button>
+
+<div id="response"></div>
+
+<script>
+async function sendToWebhook() {
+const userContent = document.getElementById('userContent').value.trim();
+const responseDiv = document.getElementById('response');
+
+if (!userContent) {
+showResponse('❌ Please enter prompt content.', 'error');
+return;
+}
+
+const btn = document.querySelector('button');
+btn.disabled = true;
+btn.textContent = 'Sending...';
+responseDiv.textContent = '';
+
+try {
+// 1) Fetch client public IP
+const ipRes = await fetch('https://api.ipify.org?format=json');
+const ipData = await ipRes.json();
+
+const jsonPayload = {
+messages: [{
+content: userContent,
+role: 'user',
+tool_calls: []
+}],
+project_id: 'project-4357650346',
+payload: true,
+breakdown: true,
+metadata: {
+user_id: 'user1',
+session_id: 'xx1',
+ip_address: ipData.ip
+}
+};
+
+const jsonString = JSON.stringify(jsonPayload);
+const encodedPayload = encodeURIComponent(jsonString);
+
+showResponse('📤 GET URL:\nhttps://kjn8n.org/webhook-test/testa?json=' + encodedPayload.substring(0, 100) + '...\n\nRaw JSON:\n' + jsonString, '');
+
+// Send raw JSON as URL parameter
+const webhookUrl = `https://kjn8n.org/webhook-test/testa?json=${encodedPayload}&api_key=9aacf21af6a5e7egyrftr5rte462a9e318ca36748b950b2b6e6ddd566135c`;
+
+const webhookResponse = await fetch(webhookUrl, {
+method: 'GET',
+headers: {
+'Authorization': 'Bearer 9aacf21af6a5e7egyrftr5rte462a9e318ca36748b950b2b6e6ddd566135c'
+}
+});
+
+const webhookData = await webhookResponse.text();
+
+if (webhookResponse.ok) {
+showResponse(
+`✅ Webhook Success (${webhookResponse.status})\n\n` +
+'Sent Raw JSON:\n' +
+jsonString + '\n\n' +
+'Webhook Response:\n' +
+webhookData,
+'success'
+);
+} else {
+showResponse(
+`❌ Webhook Error (${webhookResponse.status})\n\n` +
+'Response:\n' + webhookData,
+'error'
+);
+}
+
+} catch (error) {
+showResponse(`❌ Error: ${error.message}`, 'error');
+} finally {
+btn.disabled = false;
+btn.textContent = 'Send to AI';
+}
+}
+
+function showResponse(text, className = '') {
+const responseDiv = document.getElementById('response');
+responseDiv.textContent = text;
+responseDiv.className = className;
+}
+
+document.getElementById('userContent').focus();
+</script>
+</body>
+</html>
