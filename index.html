@@ -131,10 +131,10 @@ ip_address: ipData.ip
 const jsonString = JSON.stringify(jsonPayload);
 const encodedPayload = encodeURIComponent(jsonString);
 
-showResponse('📤 GET URL:\nhttps://kjn8n.org/n8n/webhook/testa?json=' + encodedPayload.substring(0, 100) + '...\n\nRaw JSON:\n' + jsonString, '');
+showResponse('📤 GET URL:\nhttps://kjn8n.org/webhook/testa?json=' + encodedPayload.substring(0, 100) + '...\n\nRaw JSON:\n' + jsonString, '');
 
 // Send raw JSON as URL parameter
-const webhookUrl = `https://kjn8n.org/n8n/webhook/testa?json=${encodedPayload}&api_key=9aacf21af6a5e7egyrftr5rte462a9e318ca36748b950b2b6e6ddd566135c`;
+const webhookUrl = `https://kjn8n.org/webhook/testa?json=${encodedPayload}&api_key=9aacf21af6a5e7egyrftr5rte462a9e318ca36748b950b2b6e6ddd566135c`;
 
 const webhookResponse = await fetch(webhookUrl, {
 method: 'GET',
